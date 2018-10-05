@@ -1,54 +1,75 @@
+const mongoose = require('mongoose');
+const Joi = require('joi');
 const express = require('express');
 const router = express.Router();
 
-const genres = [
-	{ _id: 1, name: 'Action', desc: 'ACTION MOVIES' },
-	{ _id: 2, name: 'Comedy', desc: 'COMEDY MOVIES' },
-	{ _id: 3, name: 'Thriller', desc: 'THRILLER MOVIES' }
-];
+const Genre = mongoose.model(
+	'Genre',
+	new mongoose.Schema({
+		name: {
+			type: String,
+			minlength: 5,
+			required: true
+		},
+		desc: {
+			type: String,
+			minlength: 5
+		}
+	})
+);
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+	const genres = await Genre.find().sort('name');
 	res.send(genres);
 });
 
-router.get('/:id', (req, res) => {
-	const genre = genres.find(i => i._id === parseInt(req.params.id));
+router.get('/:id', async (req, res) => {
+	const genre = await Genre.findById(req.params.id).catch(err =>
+		res.status(404).send('404 NOT FOUND')
+	);
+
 	if (!genre) return res.status(404).send('404 NOT FOUND');
+
 	res.send(genre);
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 	const { error } = validate(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
-	const newGenre = {
-		_id: genres.length + 1,
+	let newGenre = new Genre({
 		name: req.body.name,
 		desc: req.body.desc
-	};
+	});
 
-	genres.push(newGenre);
+	newGenre = await newGenre.save();
 	res.send(newGenre);
 });
 
-router.put('/:id', (req, res) => {
-	const genre = genres.find(i => i._id === parseInt(req.params.id));
-	if (!genre) return res.status(404).send('404 NOT FOUND');
-
+router.put('/:id', async (req, res) => {
 	const { error } = validate(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
-	genre.name = req.body.name;
-	genre.desc = req.body.desc;
+	const genre = await Genre.findByIdAndUpdate(
+		req.params.id,
+		{
+			name: req.body.name,
+			desc: req.body.desc
+		},
+		{ new: true }
+	);
+
+	if (!genre) return res.status(404).send('404 NOT FOUND');
+
 	res.send(genre);
 });
 
-router.delete('/:id', (req, res) => {
-	const genre = genres.find(i => i._id === parseInt(req.params.id));
+router.delete('/:id', async (req, res) => {
+	const genre = await Genre.findByIdAndRemove(req.params.id);
+
 	if (!genre) return res.status(404).send('404 NOT FOUND');
 
-	const index = genres.indexOf(genre);
-	res.send(genres.splice(index, 1));
+	res.send(genre);
 });
 
 function validate(genre) {
@@ -56,9 +77,7 @@ function validate(genre) {
 		name: Joi.string()
 			.min(3)
 			.required(),
-		desc: Joi.string()
-			.min(5)
-			.required()
+		desc: Joi.string().min(5)
 	};
 	return Joi.validate(genre, schema);
 }
