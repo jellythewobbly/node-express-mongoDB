@@ -34,8 +34,9 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-	const { error } = validate(req.body);
+	const { error } = validateGenre(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
+	console.log(req.body);
 
 	let newGenre = new Genre({
 		name: req.body.name,
@@ -47,7 +48,7 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-	const { error } = validate(req.body);
+	const { error } = validateGenre(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
 	const genre = await Genre.findByIdAndUpdate(
@@ -72,7 +73,7 @@ router.delete('/:id', async (req, res) => {
 	res.send(genre);
 });
 
-function validate(genre) {
+function validateGenre(genre) {
 	const schema = {
 		name: Joi.string()
 			.min(3)
