@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const express = require('express');
+
 const router = express.Router();
 
 const Genre = mongoose.model(
@@ -9,12 +10,12 @@ const Genre = mongoose.model(
 		name: {
 			type: String,
 			minlength: 5,
-			required: true
+			required: true,
 		},
 		desc: {
 			type: String,
-			minlength: 5
-		}
+			minlength: 5,
+		},
 	})
 );
 
@@ -40,7 +41,7 @@ router.post('/', async (req, res) => {
 
 	let newGenre = new Genre({
 		name: req.body.name,
-		desc: req.body.desc
+		desc: req.body.desc,
 	});
 
 	newGenre = await newGenre.save();
@@ -55,7 +56,7 @@ router.put('/:id', async (req, res) => {
 		req.params.id,
 		{
 			name: req.body.name,
-			desc: req.body.desc
+			desc: req.body.desc,
 		},
 		{ new: true }
 	);
@@ -78,7 +79,7 @@ function validateGenre(genre) {
 		name: Joi.string()
 			.min(3)
 			.required(),
-		desc: Joi.string().min(5)
+		desc: Joi.string().min(5),
 	};
 	return Joi.validate(genre, schema);
 }

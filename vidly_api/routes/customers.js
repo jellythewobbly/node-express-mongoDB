@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const express = require('express');
+
 const router = express.Router();
 
 const Customer = mongoose.model(
@@ -9,17 +10,17 @@ const Customer = mongoose.model(
 		name: {
 			type: String,
 			minlength: 3,
-			required: true
+			required: true,
 		},
 		phone: {
 			type: String,
 			minlength: 8,
-			required: true
+			required: true,
 		},
 		isGold: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	})
 );
 
@@ -29,9 +30,9 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-	const customer = await Customer.findById(req.params.id).catch(err => {
-		return res.status(404).send('404, customer not found');
-	});
+	const customer = await Customer.findById(req.params.id).catch(err =>
+		res.status(404).send('404, customer not found')
+	);
 	if (!customer) return res.status(404).send('404, customer not found');
 
 	res.send(customer);
@@ -53,9 +54,7 @@ router.put('/:id', async (req, res) => {
 
 	const customer = await Customer.findByIdAndUpdate(
 		req.params.id,
-		{
-			...req.body
-		},
+		{ ...req.body },
 		{ new: true }
 	);
 
@@ -78,7 +77,7 @@ function validateCustomer(customer) {
 		phone: Joi.string()
 			.min(8)
 			.required(),
-		isGold: Joi.boolean()
+		isGold: Joi.boolean(),
 	};
 	return Joi.validate(customer, schema);
 }

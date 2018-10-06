@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const express = require('express');
 const home = require('./routes/home');
 const genres = require('./routes/genres');
 const customers = require('./routes/customers');
-const express = require('express');
+
 const app = express();
 
 mongoose
