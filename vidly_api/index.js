@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const express = require('express');
-const home = require('./routes/home');
-const genres = require('./routes/genres');
 const customers = require('./routes/customers');
+const genres = require('./routes/genres');
+const movies = require('./routes/movies');
+const rentals = require('./routes/rentals');
+const home = require('./routes/home');
 
 const app = express();
 
@@ -17,8 +19,10 @@ mongoose
 
 app.use(express.json());
 app.use(helmet());
-app.use('/api/genres', genres);
 app.use('/api/customers', customers);
+app.use('/api/genres', genres);
+app.use('/api/movies', movies);
+app.use('/api/rentals', rentals);
 app.use('/', home);
 
 const port = process.env.PORT || 3000;
