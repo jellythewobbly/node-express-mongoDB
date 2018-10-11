@@ -1,7 +1,11 @@
 const express = require('express');
+const Fawn = require('fawn');
+const mongoose = require('mongoose');
 const { Rental, validate } = require('../models/rental');
 const { Customer } = require('../models/customer');
 const { Movie } = require('../models/movie');
+
+Fawn.init(mongoose);
 
 const router = express.Router();
 
@@ -32,7 +36,7 @@ router.post('/', async (req, res) => {
 	if (movie.numberInStock === 0)
 		return res.status(400).send('ERROR, MOVIE IS NOT IN STOCK');
 
-	let newRental = new Rental({
+	const newRental = new Rental({
 		customer: {
 			_id: customer._id,
 			name: customer.name,
@@ -46,12 +50,22 @@ router.post('/', async (req, res) => {
 		},
 	});
 
-	newRental = await newRental.save();
+	try {
+		new Fawn.Task()
+			.save('rentals', newRental)
+			.update(
+				'movies',
+				{ _id: movie._id },
+				{
+					$inc: { numberInStock: -1 },
+				}
+			)
+			.run();
 
-	movie.numberInStock -= 1;
-	movie.save();
-
-	res.send(newRental);
+		res.send(newRental);
+	} catch (err) {
+		res.status(500).send('INTERNAL SERVER ERROR');
+	}
 });
 
 router.put('/:id', async (req, res) => {
