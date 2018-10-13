@@ -29,8 +29,8 @@ const validateUser = user => {
 			.min(3)
 			.required(),
 		email: Joi.string()
-			.min(5)
 			.email()
+			.min(5)
 			.required(),
 		password: Joi.string()
 			.min(8)
