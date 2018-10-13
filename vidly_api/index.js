@@ -1,3 +1,4 @@
+const config = require('config');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const express = require('express');
@@ -12,6 +13,12 @@ const rentals = require('./routes/rentals');
 const home = require('./routes/home');
 
 const app = express();
+
+if (!config.get('jwtPrivateKey')) {
+	console.error('ERROR: JSON Web Token is not defined');
+	console.log(`Please run 'export default_jwtPrivateKey=exampleSecureKey'`);
+	process.exit(1);
+}
 
 mongoose
 	.connect(
