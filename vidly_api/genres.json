@@ -1,0 +1,18 @@
+[
+	{
+		"name": "Action",
+		"desc": "Action movies"
+	},
+	{
+		"name": "Comedy",
+		"desc": "Funny movies"
+	},
+	{
+		"name": "Thriller",
+		"desc": "Exciting movies"
+	},
+	{
+		"name": "Romance",
+		"desc": "Romantic movies"
+	}
+]

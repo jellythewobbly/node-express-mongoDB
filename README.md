@@ -7,3 +7,9 @@
 5. Ensure you have MongoDB installed, run mongod
 6. Start app using nodemon
 7. Use postman for HTTP requests
+
+To seed sample data, cd to vidly_api and run the following lines:
+
+"mongoimport -d node_vidly -c genres genres.json --jsonArray"
+"mongoimport -d node_vidly -c users users.json --jsonArray"
+"mongoimport -d node_vidly -c customers customers.json --jsonArray"

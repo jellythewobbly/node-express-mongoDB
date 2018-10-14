@@ -1,0 +1,12 @@
+[
+	{
+		"name": "David",
+		"password": "$2a$10$XV9RqF33NhJH.HoNIbzK3uAcrXXdo/8EaSvNqIoOR8x2Re.ZNa3dC",
+		"email": "david@david.com"
+	},
+	{
+		"name": "Joel",
+		"password": "$2a$10$UQMdMa4rwB88JT7uqivCp.4wHk51wqkXWIZL53nATB9PiaRw2LRNO",
+		"email": "joel@joel.com"
+	}
+]
