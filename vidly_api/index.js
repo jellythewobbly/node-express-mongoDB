@@ -1,5 +1,6 @@
 require('express-async-errors');
 const config = require('config');
+const winston = require('winston');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const express = require('express');
@@ -15,6 +16,9 @@ const home = require('./routes/home');
 const error = require('./middleware/error');
 
 const app = express();
+
+// winston.add(new winston.transports.File(), { filename: 'logfile.log' });
+winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 
 if (!config.get('jwtPrivateKey')) {
 	console.error('ERROR: JSON Web Token is not defined');
