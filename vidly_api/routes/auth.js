@@ -1,6 +1,7 @@
 const express = require('express');
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
+const _ = require('lodash');
 const { User } = require('../models/user');
 
 const router = express.Router();
@@ -30,7 +31,9 @@ router.post('/', async (req, res) => {
 	if (!validPassword) return res.status(400).send('INVALID EMAIL OR PASSWORD');
 
 	const token = user.generateAuthToken();
-	res.send(token);
+	res
+		.header('x-auth-token', token)
+		.send(_.pick(user, ['_id', 'email', 'isAdmin']));
 });
 
 module.exports = router;
