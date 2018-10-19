@@ -1,6 +1,7 @@
 require('express-async-errors');
 const config = require('config');
 const winston = require('winston');
+require('winston-mongodb');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const express = require('express');
@@ -17,11 +18,24 @@ const error = require('./middleware/error');
 
 const app = express();
 
-// winston.add(new winston.transports.File(), { filename: 'logfile.log' });
+process.on('uncaughtException', err => {
+	console.error('Error: There was an uncaught exception');
+	const { name, message, level, stack } = err;
+	winston.error({
+		message,
+		name,
+		level,
+		stack,
+	});
+});
+
 winston.add(new winston.transports.File({ filename: 'logfile.log' }));
+winston.add(
+	new winston.transports.MongoDB({ db: 'mongodb://localhost/node_vidly' })
+);
 
 if (!config.get('jwtPrivateKey')) {
-	console.error('ERROR: JSON Web Token is not defined');
+	console.error('ERROR: JSON Web Token key is not defined');
 	console.log(`Please run 'export default_jwtPrivateKey=exampleSecureKey'`);
 	process.exit(1);
 }

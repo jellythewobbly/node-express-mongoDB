@@ -1,6 +1,11 @@
 const winston = require('winston');
 
 module.exports = function(err, req, res, next) {
-	winston.error(err.message);
+	const { name, message, stack, level } = err;
+	winston.error({
+		message,
+		level,
+		meta: { name, message, stack },
+	});
 	res.status(500).send('SOMETHING FAILED, PLEASE TRY AGAIN');
 };
